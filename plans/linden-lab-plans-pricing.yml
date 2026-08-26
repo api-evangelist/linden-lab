@@ -1,0 +1,108 @@
+generated: '2026-08-25'
+method: searched
+source: https://secondlife.com/premium
+plan_count: 4
+currency: USD
+note: >-
+  Second Life is priced as a consumer subscription plus a land-rental meter, not as
+  an API product. There is no developer plan, no per-call pricing and no paid API
+  tier anywhere on Linden Lab's surface: the Live Data Feeds are free and
+  anonymous, an api-key for get_agent_id is free with any account, and Registration
+  API access is granted by application at no stated charge. The tiers below are
+  what a Second Life resident buys, recorded because they are the only published
+  price list the company has and they gate the land quota an API consumer's users
+  will hit. Prices are quoted "as low as", i.e. the annual-billing rate; the site
+  does not publish the monthly-billing rate separately.
+plans:
+  - name: Basic
+    price: 0
+    currency: USD
+    billing_period: n/a
+    included:
+      l_dollar_stipend_weekly: 0
+      land_allowance_m2: 0
+    signup_bonus: null
+  - name: Plus
+    price: 5.50
+    price_note: '"As low as $5.50 per month" — annual billing; monthly option available'
+    currency: USD
+    billing_period: monthly
+    included:
+      l_dollar_stipend_weekly: 150
+      land_allowance_m2: 512
+    signup_bonus: null
+  - name: Premium
+    price: 9.99
+    price_note: '"As low as $9.99 per month" — annual billing; monthly option available'
+    currency: USD
+    billing_period: monthly
+    included:
+      l_dollar_stipend_weekly: 300
+      land_allowance_m2: 1024
+    signup_bonus:
+      l_dollars: 1000
+      condition: after 45 consecutive days
+  - name: Premium Plus
+    price: 11.99
+    price_note: '"As low as $11.99 per month" — annual billing; monthly option available'
+    currency: USD
+    billing_period: monthly
+    included:
+      l_dollar_stipend_weekly: 650
+      land_allowance_m2: 2048
+    signup_bonus:
+      l_dollars: 3000
+      condition: after 45 consecutive days (optional add-on)
+metered:
+  name: Mainland land tier
+  source: https://secondlife.com/land/pricing
+  method: searched
+  billing_period: monthly
+  currency: USD
+  note: >-
+    Recurring maintenance fee by parcel size. Land purchase price itself is
+    market-driven and not published ("The cost of land itself is based on demand
+    and can fluctuate with the market"). The premium land allowance above is
+    deducted before tier is charged.
+  tiers:
+    - parcel_m2: 512
+      fraction_of_region: 1/128
+      monthly_usd: 4.00
+      prim_capacity: 175
+    - parcel_m2: 1024
+      fraction_of_region: 1/64
+      monthly_usd: 7.00
+      prim_capacity: 351
+    - parcel_m2: 2048
+      fraction_of_region: 1/32
+      monthly_usd: 13.00
+      prim_capacity: 703
+    - parcel_m2: 4096
+      fraction_of_region: 1/16
+      monthly_usd: 22.00
+      prim_capacity: 1406
+    - parcel_m2: 8192
+      fraction_of_region: 1/8
+      monthly_usd: 31.00
+      prim_capacity: 2812
+    - parcel_m2: 16384
+      fraction_of_region: 1/4
+      monthly_usd: 60.00
+      prim_capacity: 5625
+    - parcel_m2: 32768
+      fraction_of_region: 1/2
+      monthly_usd: 103.00
+      prim_capacity: 11250
+    - parcel_m2: 49152
+      fraction_of_region: 3/4
+      monthly_usd: 142.00
+      prim_capacity: 16875
+    - parcel_m2: 65536
+      fraction_of_region: Entire Region
+      monthly_usd: 166.00
+      prim_capacity: 22500
+api_pricing:
+  published: false
+  detail: >-
+    No paid API plan, no quota tiers, no overage rates. Verified 2026-08-25 across
+    secondlife.com/premium, secondlife.com/land/pricing and the wiki API portal.

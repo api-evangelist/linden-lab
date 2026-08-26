@@ -1,0 +1,54 @@
+generated: '2026-08-25'
+method: searched
+source: https://releasenotes.secondlife.com/ and https://github.com/secondlife/viewer/releases
+scheme: date-and-channel
+note: >-
+  Linden Lab keeps no changelog for its web APIs — the Live Data Feeds, get_agent_id
+  and Registration API pages on the wiki carry MediaWiki page history and nothing
+  else. What IS published, and published continuously, is the platform release
+  stream: releasenotes.secondlife.com for the viewer and simulator, and tagged
+  GitHub releases on secondlife/viewer several times a week. The entries below are
+  the recent window observed on 2026-08-25 and are release tags, not API changes.
+current_version: 26.2
+channels:
+  - name: Release
+    description: the pinned production viewer channel
+    url: https://releasenotes.secondlife.com/viewer.html
+  - name: Project
+    description: feature-preview builds
+  - name: Develop
+    description: nightly builds from the development branch
+  - name: Simulator (RC)
+    description: rolling server release candidates deployed to RC region channels
+    url: https://releasenotes.secondlife.com/simulator.html
+entries:
+  - version: Second_Life_Develop#a402fd4d-2026-08-25
+    date: '2026-08-25'
+    channel: develop
+    breaking: false
+  - version: Second_Life_Release#3eb594aa-26.2-control
+    date: '2026-08-22'
+    channel: release/26.2-pinned
+    breaking: false
+  - version: Second_Life_Develop#b26e4517-2026-08-22
+    date: '2026-08-22'
+    channel: develop
+    breaking: false
+  - version: Second_Life_Release#a96e4f99-26.2-control
+    date: '2026-08-21'
+    channel: release/26.2-pinned
+    breaking: false
+  - version: Second_Life_Release#9f58774-26.2-control
+    date: '2026-08-21'
+    channel: release/26.2-pinned
+    breaking: false
+  - version: Second_Life_Project#722a3f13-26.2-control
+    date: '2026-08-21'
+    channel: release/26.2-pinned
+    breaking: false
+api_changelog:
+  published: false
+  detail: >-
+    No dated changelog exists for any Second Life web API. A consumer of
+    /datafeeds/* or /get_agent_id has no channel that would tell them a field
+    changed shape; the API Terms reserve the right to change without notice.

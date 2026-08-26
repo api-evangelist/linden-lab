@@ -1,0 +1,92 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/secondlife (Linden Lab's public GitHub org) plus the PyPI and
+  Visual Studio Marketplace registry metadata endpoints, queried unauthenticated
+  2026-08-25.
+note: >-
+  Linden Lab publishes no client SDK for its HTTP APIs (Live Data Feeds,
+  get_agent_id, Registration API). What it does publish first-party are the
+  serialization and tooling libraries the Second Life platform itself is built on
+  — LLSD codecs, the LEAP viewer plugin protocol library, the autobuild package
+  manager — plus the official editor extension. Every entry below was resolved to
+  a real registry record; none is a wrapper around the documented web APIs.
+packages:
+  - language: python
+    registry: pypi
+    name: llsd
+    url: https://pypi.org/project/llsd/
+    install: pip install llsd
+    official: true
+    version: 1.2.4
+    published: '2024-04-02'
+    repository: https://github.com/secondlife/python-llsd
+    description: >-
+      Linden Lab Structured Data (LLSD) serialization library — the wire format
+      the Second Life Inventory API, the homepage.xml and lindex.xml data feeds,
+      and the viewer capability system all use.
+  - language: python
+    registry: pypi
+    name: llbase
+    url: https://pypi.org/project/llbase/
+    install: pip install llbase
+    official: true
+    version: 1.3.1
+    published: '2023-04-03'
+    repository: https://github.com/secondlife/python-llbase
+    description: Base Linden Lab Python modules (the repo itself is labelled "Vintage python utility modules").
+  - language: python
+    registry: pypi
+    name: llsd-asgi
+    url: https://pypi.org/project/llsd-asgi/
+    install: pip install llsd-asgi
+    official: true
+    version: 0.2.2
+    published: '2024-03-16'
+    repository: https://github.com/secondlife/llsd-asgi
+    description: Drop-in LLSD content negotiation middleware for ASGI applications.
+  - language: python
+    registry: pypi
+    name: autobuild
+    url: https://pypi.org/project/autobuild/
+    install: pip install autobuild
+    official: true
+    version: 3.10.2
+    published: '2026-01-09'
+    repository: https://github.com/secondlife/autobuild
+    description: >-
+      Linden Lab automated package management and build system, used to build the
+      Second Life viewer and its third-party dependencies. Ships an `autobuild`
+      CLI, but it is a build tool — not a client for any Second Life web API.
+  - language: typescript
+    registry: vscode-marketplace
+    name: lindenlab.sl-vscode-plugin
+    url: https://marketplace.visualstudio.com/items?itemName=lindenlab.sl-vscode-plugin
+    install: code --install-extension lindenlab.sl-vscode-plugin
+    official: true
+    version: 1.0.6
+    published: '2026-08-22'
+    repository: https://github.com/secondlife/sl-vscode-plugin
+    description: >-
+      Second Life VSCode Plugin — binding extension for external LSL and SLua
+      editing from the Second Life viewer. Publisher is `lindenlab`, confirmed via
+      the Marketplace extensionquery API.
+not_published:
+  - registry: npm
+    checked: '2026-08-25'
+    result: >-
+      No first-party Linden Lab / Second Life package. A registry search for
+      "secondlife" returned only third-party projects (node-omv, secondlife-tools,
+      @blackpaw/second-life-http-headers), none authored by Linden Lab.
+  - registry: nuget
+    checked: '2026-08-25'
+    result: >-
+      LibreMetaverse is present on NuGet and a fork of it lives at
+      github.com/secondlife/libremetaverse, but the published NuGet package is
+      maintained by the community LibreMetaverse project, not by Linden Lab. Not
+      recorded as first-party.
+  - registry: rubygems
+    checked: '2026-08-25'
+    result: >-
+      github.com/secondlife/registration-api-examples is Ruby example code for the
+      Registration API, published as a repository only — no gem.

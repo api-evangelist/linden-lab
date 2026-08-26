@@ -1,0 +1,82 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://releasenotes.secondlife.com/, https://status.secondlifegrid.net/,
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:API_Terms_of_Use,
+  https://github.com/secondlife/viewer/releases
+versioning:
+  scheme: date-and-channel
+  detail: >-
+    Second Life does not version its web APIs. What is versioned is the platform:
+    the viewer ships on named channels (Release, Project, Develop) tagged like
+    `Second_Life_Release#3eb594aa-26.2-control`, and the simulator ships on
+    rolling RC channels. The APIs themselves carry version markers only inside
+    capability names (the Inventory API's "Version-2 identified capabilities",
+    FetchInventory2 / FetchInventoryDescendents2), not in a URL path or an
+    Accept header. There is no /v1/ anywhere on api.secondlife.com.
+  api_version_in_url: false
+  api_version_header: null
+status_page:
+  url: https://status.secondlifegrid.net/
+  platform: Atlassian Statuspage
+  machine_readable: true
+  endpoints:
+    - url: https://status.secondlifegrid.net/api/v2/status.json
+      status: 200
+      returns: overall indicator + description
+    - url: https://status.secondlifegrid.net/api/v2/summary.json
+      status: 200
+      returns: per-component status (secondlife.com, grid, marketplace, ...)
+    - url: https://status.secondlifegrid.net/history.rss
+      status: 200
+      returns: incident history feed
+  probed: '2026-08-25'
+  observed: '{"status":{"indicator":"none","description":"All Systems Operational"}}'
+  note: >-
+    The Statuspage v2 JSON API is Atlassian's contract, not Linden Lab's, but it is
+    served for Linden Lab's page and is the only machine-readable operational
+    signal the company exposes. An agent monitoring Second Life should poll
+    /api/v2/summary.json rather than scraping the HTML.
+release_notes:
+  url: https://releasenotes.secondlife.com/
+  status: 200
+  channels:
+    - name: viewer
+      url: https://releasenotes.secondlife.com/viewer.html
+      status: 200
+    - name: simulator
+      url: https://releasenotes.secondlife.com/simulator.html
+      status: 200
+  github_releases: https://github.com/secondlife/viewer/releases
+deprecation_policy:
+  published: false
+  detail: >-
+    Linden Lab publishes no deprecation policy, no sunset window, and no advance
+    notice commitment for its APIs. The API Terms of Use state the opposite
+    explicitly: "Linden Lab may amend these API Terms at any time in its sole
+    discretion, with or without notice, effective upon posting the amended
+    Agreement." No Sunset or Deprecation response header (RFC 8594) was observed
+    on any live endpoint probed 2026-08-25.
+  source: https://wiki.secondlife.com/wiki/Linden_Lab_Official:API_Terms_of_Use
+  rfc8594_headers_observed: false
+sla:
+  published: false
+  detail: >-
+    No uptime SLA, no credit schedule and no support-response commitment is
+    published for the APIs. Second Life is sold as a consumer subscription; the
+    status page reports availability but promises none.
+deprecated_operations: []
+deprecated_operations_note: >-
+  Cannot be derived — Linden Lab publishes no OpenAPI. Two API surfaces named in
+  the wiki's own portal are documented as historical rather than current: the
+  Media Rendering Plugin System (viewer-internal) and several third-party services
+  listed under "Unofficial APIs" (Search API, World API, Picture Service,
+  Snapshot API), which Linden Lab neither operates nor supports.
+retired_products:
+  - name: Tilia
+    detail: >-
+      Tilia LLC, Linden Lab's payments subsidiary and the operator of the Tilia Pay
+      API, was sold to Thunes under an agreement announced 2024-04-23 and has since
+      been rebranded to Thunes. tilia.io is therefore NOT a Linden Lab API surface
+      and is deliberately excluded from this profile.
+    source: https://lindenlab.com/press-release/thunes-announces-agreement-to-acquire-tilia-llc

@@ -1,0 +1,54 @@
+generated: '2026-08-25'
+method: searched
+source: https://wiki.secondlife.com/wiki/Preview_Grid
+sandbox:
+  name: Aditi (Second Life Preview / Beta Grid)
+  type: full parallel environment
+  purpose: >-
+    Linden Lab runs a complete second copy of the Second Life grid, Aditi, where
+    "server software under development" is tested before it reaches the production
+    grid (Agni). It is not an API sandbox in the SaaS sense — it is a whole
+    alternate world with its own economy.
+  host: secondlife.aditi.lindenlab.com
+  access:
+    method: >-
+      Log in with the standard Second Life viewer and select "Second Life Beta Test"
+      from the grid selector (Ctrl+Shift+G at the login screen).
+    who: any Second Life account holder; no developer status or application required
+    account_creation: >-
+      Aditi accounts are created automatically on first login attempt. First login
+      commonly returns "Login Failed. We're currently in the process of syncing this
+      account. Please try again later."; a retry after 10-15 seconds succeeds.
+  test_funds:
+    currency: L$
+    initial_balance: 50000
+    note: >-
+      New Aditi accounts receive L$50,000 for marketplace testing. This is test
+      money in every meaningful sense — the wiki is explicit that "IN NO EVENT will
+      you be able to transfer money or objects back from the Preview Grid for use in
+      the Main Second Life Grid (Agni)."
+  data_sync:
+    inventory: >-
+      Inventory syncs from the production grid roughly every 24 hours after login,
+      triggered around 6 AM PT. Items acquired on the main grid after an Aditi login
+      may not appear immediately.
+  extra_steps:
+    - description: mesh upload requires separately accepting the IP terms on Aditi
+      url: https://secondlife.aditi.lindenlab.com/my/account/ip/accept.php
+  isolation: one-way — nothing crosses from Aditi back to Agni
+web_api_sandbox:
+  published: false
+  detail: >-
+    None of the documented web APIs has a test mode. There is no test-vs-live api
+    key prefix, no sandbox base URL for api.secondlife.com or cap.secondlife.com, no
+    test fixtures and no time simulation. The Registration API in particular creates
+    real accounts on the production grid; the only rehearsal it offers is the
+    `check_name` capability. Anyone integrating against Registration or get_agent_id
+    is testing in production.
+test_values:
+  published: false
+  detail: >-
+    No published magic test identifiers, test cards or fixture UUIDs. The only
+    concrete example UUID in the docs is the all-zeros-with-trailing-1 agent id used
+    illustratively in the get_agent_id response sample; it is a doc example, not a
+    supported test value, and is not recorded here as one.

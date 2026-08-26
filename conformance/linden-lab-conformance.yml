@@ -1,0 +1,129 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from the artifacts in this repo (authentication/, errors/,
+  conventions/, well-known/) and from documentation searched on
+  wiki.secondlife.com and lindenlab.com on 2026-08-25. No compliance claim was
+  copied from a marketing page without a probe or a document behind it.
+standards:
+  - id: openapi
+    conforms: false
+    evidence: >-
+      No OpenAPI or Swagger document exists. Probed /openapi.json, /openapi.yaml,
+      /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc against
+      api.secondlife.com (all 301 to the wiki portal, then 403), against
+      create.secondlife.com (404) and against secondlife.com and lindenlab.com
+      (404). A GitHub code search across the secondlife org for "openapi" and
+      "swagger" returned one package-lock.json transitive dependency and zero
+      hits respectively.
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      No AsyncAPI document. GitHub code search across org:secondlife for
+      "asyncapi" returned 0 results, 2026-08-25.
+  - id: graphql
+    conforms: false
+    evidence: >-
+      POST to https://api.secondlife.com/graphql returned 301 to the wiki portal.
+      No GraphQL surface is documented anywhere.
+  - id: grpc
+    conforms: false
+    evidence: >-
+      No service .proto published. The single .proto in the org
+      (slua/fuzz/luau.proto) is a libFuzzer harness definition for the Luau
+      parser, not a service contract.
+  - id: soap-wsdl
+    conforms: false
+    evidence: >-
+      No SOAP surface. Probed ?wsdl, ?singleWsdl and /services?wsdl on
+      api.secondlife.com, cap.secondlife.com, map.secondlife.com and
+      secondlife.com on 2026-08-25: api.secondlife.com and map.secondlife.com
+      301 to the wiki portal, secondlife.com/?wsdl returns the marketing homepage
+      and cap.secondlife.com/?wsdl returns "Invalid Capability ID." — both simply
+      ignore the query string. No WSDL anywhere. The one legacy RPC mechanism in
+      Second Life is XML-RPC (the viewer login endpoint and the in-world
+      llRemoteData XML-RPC channel), which predates and is distinct from SOAP.
+  - id: oauth2
+    conforms: false
+    evidence: >-
+      No authorization server, no token endpoint, no scopes. Probed
+      /.well-known/oauth-authorization-server on six hosts — all 404 or 403.
+  - id: oidc
+    conforms: false
+    evidence: >-
+      Second Life web login uses OpenID 2.0 (id.secondlife.com), not OpenID
+      Connect. Probed /.well-known/openid-configuration on six hosts — all 404 or
+      403. See authentication/linden-lab-authentication.yml.
+  - id: rfc9457
+    conforms: false
+    evidence: >-
+      No application/problem+json. get_agent_id returns a vendor JSON envelope
+      {error, message}; the Registration API returns numeric codes in LLSD.
+  - id: rfc9116
+    conforms: false
+    evidence: >-
+      No security.txt on any Linden Lab host. The one 200 found in the probe
+      (status.secondlifegrid.net) is Atlassian's, canonical
+      https://www.atlassian.com/.well-known/security.txt.
+  - id: rfc8594
+    conforms: false
+    evidence: >-
+      No Sunset or Deprecation headers observed on any live response; no
+      deprecation policy published. The API Terms reserve the right to change
+      "with or without notice".
+  - id: rfc8615
+    conforms: false
+    evidence: No /.well-known/ documents served on any Linden Lab host.
+  - id: pagination
+    conforms: false
+    evidence: No paginated endpoint exists — see conventions/linden-lab-conventions.yml.
+  - id: idempotency
+    conforms: false
+    evidence: No idempotency key or retry-safety contract on any write operation.
+  - id: json-api
+    conforms: false
+    evidence: Responses are plain vendor JSON, LLSD or bespoke two-line text.
+  - id: llsd
+    conforms: true
+    evidence: >-
+      LLSD (Linden Lab Structured Data) is Linden Lab's own openly-specified
+      serialization format, documented at https://wiki.secondlife.com/wiki/LLSD,
+      implemented first-party in the `llsd` PyPI package (v1.2.4) and served live
+      with content-type application/llsd+xml by
+      https://api.secondlife.com/datafeeds/homepage.xml and lindex.xml (both
+      probed 200, 2026-08-25). It is a real, published, implemented data standard
+      — but it is Linden Lab's own, adopted essentially nowhere else, so it buys
+      an integrator no interoperability with anything outside Second Life.
+    caveat: single-vendor standard
+  - id: statuspage-v2
+    conforms: true
+    evidence: >-
+      https://status.secondlifegrid.net/api/v2/status.json and
+      /api/v2/summary.json both returned 200 with valid Atlassian Statuspage v2
+      payloads (probed 2026-08-25). Conformance belongs to the platform vendor,
+      not to Linden Lab, but the surface is real and machine-readable.
+domain_standard:
+  market: virtual worlds / metaverse platforms
+  standard_declared: false
+  detail: >-
+    No domain standard is declared by any Linden Lab contract. The candidate
+    interoperability standards for this market — the Metaverse Standards Forum's
+    work, OpenXR, glTF, VRM, ActivityPub for social federation — appear nowhere in
+    the API surface. Second Life does consume glTF and Collada for mesh assets and
+    OpenXR is vendored as a viewer build dependency (secondlife/3p-openxr), but
+    those are client-side asset and runtime concerns, not a contract declaring a
+    domain standard. Recorded as absent rather than stretched: this check is
+    reward-only and inventing a conformance to fill it would be worse than a zero.
+  candidates_checked:
+    - Metaverse Standards Forum profiles
+    - OpenXR (present only as a viewer build dependency, not in any contract)
+    - glTF / Collada (asset formats consumed by the viewer, not contract-declared)
+    - ActivityPub (absent)
+compliance_certifications:
+  published: false
+  detail: >-
+    No trust center, no SOC 2 / ISO 27001 / PCI DSS / HIPAA / FedRAMP claim, and no
+    compliance page found on lindenlab.com or secondlife.com. Historically the
+    PCI-scoped payments work sat inside Tilia LLC, which Linden Lab sold to Thunes
+    in 2024 — so the certifications a search engine still associates with
+    "Linden Lab payments" now belong to Thunes. No Compliance pointer is emitted.

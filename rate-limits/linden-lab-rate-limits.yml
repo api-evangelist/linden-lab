@@ -1,0 +1,61 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://wiki.secondlife.com/wiki/Name_to_agent_ID_API and
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Live_Data_Feeds
+limit_count: 1
+note: >-
+  Exactly one numeric rate limit is published across Linden Lab's whole API
+  surface, and it is stated in prose on a wiki page rather than signalled at
+  runtime. No Second Life endpoint returns any RateLimit-*, X-RateLimit-* or
+  Retry-After header — verified against live 200 and 400 responses on
+  api.secondlife.com on 2026-08-25, whose only non-standard header is
+  x-ll-request-id. An agent cannot discover its remaining budget from the API; it
+  has to have read the wiki.
+rate_limits:
+  - api: Second Life Name to Agent ID API
+    endpoint: POST https://api.secondlife.com/get_agent_id
+    scope: per-api-key
+    limit: 2
+    window: 1s
+    burst: not documented
+    status_on_exhaustion: 403
+    error_body: >-
+      JSON object with `error` and `message` fields (same envelope as the probed
+      400 bad_input response).
+    headers_returned: []
+    method: searched
+    source: https://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+    note: >-
+      The docs state "403: Rate limiting exceeded (>2 requests/second)". Not
+      probed to exhaustion — deliberately, since doing so would mean abusing a
+      live production endpoint.
+refresh_cadence:
+  - feed: https://api.secondlife.com/datafeeds/homepage.txt
+    field: signups
+    updated: daily
+  - feed: https://api.secondlife.com/datafeeds/homepage.txt
+    field: inworld
+    updated: every 3 minutes
+  - feed: https://api.secondlife.com/datafeeds/lindex.txt
+    field: all LindeX market data
+    updated: every 15 minutes
+  - note: >-
+      These are publisher-side refresh intervals, not consumer rate limits. They
+      are the only guidance Linden Lab gives on polling frequency: there is no
+      documented ceiling on requests to /datafeeds/*, and no cache-control or
+      ETag-based conditional-request guidance either. Polling a 3-minute feed more
+      often than every 3 minutes buys nothing.
+    source: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Live_Data_Feeds
+response_headers_observed:
+  probed: '2026-08-25'
+  endpoint: POST https://api.secondlife.com/get_agent_id
+  headers:
+    - server: Apache
+    - x-ll-request-id
+    - x-frame-options: SAMEORIGIN
+    - x-content-type-options: nosniff
+    - referrer-policy: same-origin
+    - cross-origin-opener-policy: same-origin
+    - x-xss-protection: 1; mode=block
+  rate_limit_headers_present: false

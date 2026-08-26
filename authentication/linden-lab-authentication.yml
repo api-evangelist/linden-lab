@@ -1,0 +1,87 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://wiki.secondlife.com/wiki/Name_to_agent_ID_API,
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API,
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Live_Data_Feeds,
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Inventory_API — plus a live
+  unauthenticated POST to https://api.secondlife.com/get_agent_id on 2026-08-25.
+note: >-
+  Linden Lab publishes no OpenAPI, so there are no securitySchemes to derive from.
+  This profile is read from the documentation and confirmed against live responses.
+  Three distinct and unrelated auth models are in play across the Second Life API
+  surface — an API key header, an unguessable capability URL, and OpenID 2.0 for
+  the web properties — and none of them is OAuth 2.0.
+schemes:
+  - id: api-key-header
+    type: apiKey
+    in: header
+    name: api-key
+    applies_to:
+      - Second Life Name to Agent ID API (POST https://api.secondlife.com/get_agent_id)
+    issued_at: https://accounts.secondlife.com/manage_api_key
+    issuance: >-
+      Self-service, but behind a Second Life account login — accounts.secondlife.com
+      redirects an anonymous browser to id.secondlife.com. A Second Life account is
+      therefore a hard prerequisite for a key.
+    evidence: >-
+      A POST with a valid JSON body and no header returned HTTP 400 with the exact
+      body {"error": "bad_input", "message": "No API key included in header"}
+      (probed 2026-08-25; response carried an x-ll-request-id header).
+    docs: https://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+  - id: capability-url
+    type: bearer-in-url
+    in: path
+    applies_to:
+      - Second Life Registration API
+      - Second Life Map API utility endpoints
+      - Second Life Inventory API (viewer-issued capabilities)
+    description: >-
+      An unguessable UUID-bearing URL of the form
+      https://cap.secondlife.com/cap/0/<uuid> acts as both the endpoint and the
+      credential. Registration API capabilities are minted by POSTing first_name,
+      last_name and password to https://cap.secondlife.com/get_reg_capabilities;
+      the response is a set of per-operation capability URLs (add_to_group,
+      create_user, check_name, get_last_names, get_error_codes). Inventory API
+      capabilities (FetchInventory2, FetchInventoryDescendents2, FetchLib2,
+      FetchLibDescendents2) are handed to the viewer at login rather than fetched.
+    secret_material: the URL itself
+    rotation: not documented
+    evidence: >-
+      https://cap.secondlife.com/ returns "Invalid Capability ID." (HTTP 200,
+      23 bytes) for a bare request — probed 2026-08-25.
+    docs: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API
+  - id: none
+    type: none
+    applies_to:
+      - Second Life Live Data Feeds (https://api.secondlife.com/datafeeds/*)
+    description: >-
+      The grid statistics and LindeX market feeds are served anonymously over TLS
+      with no key, no token and no referrer requirement.
+    evidence: >-
+      GET https://api.secondlife.com/datafeeds/homepage.txt returned HTTP 200
+      text/plain with live values, unauthenticated, on 2026-08-25.
+  - id: openid-2.0
+    type: openid
+    applies_to:
+      - secondlife.com web properties
+      - accounts.secondlife.com
+      - marketplace.secondlife.com
+      - support.secondlife.com
+    description: >-
+      Second Life's own web estate authenticates against an OpenID 2.0 provider at
+      id.secondlife.com. This is OpenID 2.0, NOT OpenID Connect — there is no
+      /.well-known/openid-configuration on any host (all probed 404), no discovery
+      document, and no OAuth 2.0 authorization server. It is not offered to third
+      parties as a delegated-authorization mechanism for the APIs above.
+    evidence: >-
+      https://secondlife.com/my/account/login.php 302s to
+      https://secondlife.com/auth/oid_return.php?openid_identifier=https%3A%2F%2Fid.secondlife.com%2Fid%2Fanonymous
+      (probed 2026-08-25); https://accounts.secondlife.com/.well-known/openid-configuration
+      returned 404.
+oauth2: false
+oauth2_note: >-
+  No OAuth 2.0 anywhere on the Second Life API surface — no authorization server,
+  no scopes, no token endpoint. scopes/ is intentionally absent for this provider
+  rather than written empty.
+mtls: false

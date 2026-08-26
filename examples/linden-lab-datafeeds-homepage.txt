@@ -1,0 +1,18 @@
+signups_updated_slt
+2026-08-25 17:02:32
+signups_updated_unix
+1787702552
+signups
+71723776
+exchange_rate_updated_slt
+2026-08-25 17:22:55
+exchange_rate_updated_unix
+1787703775
+exchange_rate
+246.43
+inworld_updated_unix
+1787704200
+inworld_updated_slt
+2026-08-25 17:30:00
+inworld
+36861

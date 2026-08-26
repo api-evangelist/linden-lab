@@ -1,23 +1,219 @@
 aid: linden-lab
 name: Linden Lab
-description: 'Linden Lab is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Linden Lab is the San Francisco company that created and has continuously
+  operated Second Life since 2003 — the largest and longest-running user-built 3D
+  virtual world, with its own economy, land market and L$ currency. Its public API
+  surface is small and old, documented in prose on the Second Life wiki rather than
+  in any machine-readable contract: anonymous Live Data Feeds publishing grid
+  statistics and LindeX currency-market data, an api-key-authenticated username to
+  agent-UUID lookup, a capability-based Registration API for creating accounts from
+  a third-party site, an embeddable Leaflet-based Map API, and an outbound
+  Marketplace webhook. Linden Lab also publishes the Second Life viewer, the LSL
+  and SLua scripting documentation, and the LLSD serialization libraries on GitHub.
+  It no longer owns Tilia, its former payments subsidiary, which was sold to Thunes
+  in 2024.
 url: https://raw.githubusercontent.com/api-evangelist/linden-lab/refs/heads/main/apis.yml
+image: https://cdn.prod.website-files.com/6285718b944b3be2fa795ac1/62d0ba8168ea16a1021fd9e9_ll-webclip.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
-- Company
-apis: []
+- Virtual Worlds
+- Metaverse
+- Gaming
+- 3D
+- Social
+- Virtual Economy
+- Digital Currency
+- Marketplace
+- Scripting
+- User Generated Content
+apis:
+- name: Second Life Live Data Feeds
+  description: >-
+    Anonymous, unauthenticated feeds publishing live Second Life grid statistics
+    (grid status, total registered accounts, avatars currently inworld) and LindeX
+    currency-market data (limit and market buy/sell rate ranges and volumes over
+    the last hour, last day and today, plus the best-10-percent offer book). Served
+    in three formats — a bespoke two-line key/value text format, plain XML, and
+    LLSD XML. Signups update daily, the inworld count every 3 minutes, LindeX every
+    15 minutes. The only Second Life API reachable with no credential of any kind.
+  humanURL: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Live_Data_Feeds
+  baseURL: https://api.secondlife.com/datafeeds
+  tags:
+  - Statistics
+  - Virtual Economy
+  - Currency
+  - Open Data
+  properties:
+  - type: Documentation
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Live_Data_Feeds
+  - type: Examples
+    url: examples/linden-lab-examples.yml
+  - type: TermsOfService
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:API_Terms_of_Use
+- name: Second Life Name to Agent ID API
+  description: >-
+    Resolves a Second Life username, with an optional last name defaulting to
+    "Resident", to the avatar's agent UUID. A JSON POST authenticated with an
+    api-key header issued from the account console. Rate limited to 2 requests per
+    second, returning 403 on exhaustion. The most modern endpoint on Linden Lab's
+    surface and the only one with a JSON error envelope.
+  humanURL: https://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+  baseURL: https://api.secondlife.com
+  tags:
+  - Identity
+  - Lookup
+  properties:
+  - type: Documentation
+    url: https://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+  - type: SignUp
+    url: https://accounts.secondlife.com/manage_api_key
+  - type: RateLimits
+    url: rate-limits/linden-lab-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/linden-lab-error-codes.yml
+- name: Second Life Registration API
+  description: >-
+    Registers new Second Life residents from a third-party web page. Capability
+    based — credentials are POSTed to a capability-minting endpoint which returns
+    per-operation unguessable capability URLs for create_user, check_name,
+    add_to_group, get_last_names and get_error_codes. LLSD XML request and response
+    bodies, with a published catalog of 59 numeric error codes the API will also
+    enumerate for you at runtime. Access is granted by application, reviewed by
+    Linden Lab.
+  humanURL: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API
+  baseURL: https://cap.secondlife.com
+  tags:
+  - Registration
+  - Identity
+  - Onboarding
+  properties:
+  - type: Documentation
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API
+  - type: APIReference
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API_Reference
+  - type: ErrorCatalog
+    url: errors/linden-lab-error-codes.yml
+  - type: SourceCode
+    url: https://github.com/secondlife/registration-api-examples
+  - type: SignUp
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API_Request_Form
+- name: Second Life Map API
+  description: >-
+    Embeds an interactive map of the Second Life world into a web page. A
+    Leaflet-based JavaScript component (SLMap, gotoSLURL, setView) backed by two
+    JSONP capability endpoints on cap.secondlife.com that translate between region
+    names and grid coordinates. Paired with the SLurl deep-link scheme that opens a
+    specific inworld location in the viewer.
+  humanURL: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API
+  baseURL: https://map.secondlife.com
+  tags:
+  - Maps
+  - Geospatial
+  - Embeddable
+  properties:
+  - type: Documentation
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Introduction
+  - type: APIReference
+    url: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Reference
+  - type: Components
+    url: components/linden-lab-components.yml
+- name: Second Life Marketplace Automatic Notification System
+  description: >-
+    An outbound webhook that forwards information about every sale made on the
+    Second Life Marketplace to a merchant-configured external URL. Delivers
+    Purchase and Redelivery transaction records carrying currency, gross and fee
+    amounts, payer, receiver and merchant UUIDs, transaction and item identifiers,
+    validated by an X-ANS-Verify-Hash SHA1 header checked against a
+    merchant-specific salt.
+  humanURL: https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System
+  baseURL: https://marketplace.secondlife.com
+  tags:
+  - Webhooks
+  - Marketplace
+  - Commerce
+  - Notifications
+  properties:
+  - type: Webhooks
+    url: asyncapi/linden-lab-ans-webhooks.yml
+  - type: Documentation
+    url: https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/linden-lab-domain-security.yml
 - type: Website
-  url: https://forgeglobal.com/linden-lab_stock/
+  url: https://lindenlab.com/
+- type: DeveloperPortal
+  url: https://wiki.secondlife.com/wiki/APIs_and_Web_Services_Portal
+- type: Documentation
+  url: https://create.secondlife.com/script/lsl-reference/
+- type: APIReference
+  url: https://wiki.secondlife.com/wiki/Category:APIs
+- type: GettingStarted
+  url: https://create.secondlife.com/script/
+- type: Support
+  url: https://lindenlab.freshdesk.com/support/home
+- type: Blog
+  url: https://community.secondlife.com/blogs/
+- type: GitHubOrganization
+  url: https://github.com/secondlife
+- type: Pricing
+  url: https://secondlife.com/premium
+- type: SignUp
+  url: https://join.secondlife.com/
+- type: TermsOfService
+  url: https://lindenlab.com/tos
+- type: PrivacyPolicy
+  url: https://lindenlab.com/privacy
+- type: StatusPage
+  url: https://status.secondlifegrid.net/
+- type: ChangeLog
+  url: changelog/linden-lab-changelog.yml
+- type: Packages
+  url: packages/linden-lab-packages.yml
+- type: SDKs
+  url: packages/linden-lab-packages.yml
+- type: Authentication
+  url: authentication/linden-lab-authentication.yml
+- type: RateLimits
+  url: rate-limits/linden-lab-rate-limits.yml
+- type: Plans
+  url: plans/linden-lab-plans-pricing.yml
+- type: ErrorCatalog
+  url: errors/linden-lab-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/linden-lab-lifecycle.yml
+- type: Conventions
+  url: conventions/linden-lab-conventions.yml
+- type: Conformance
+  url: conformance/linden-lab-conformance.yml
+- type: Sandbox
+  url: sandbox/linden-lab-sandbox.yml
+- type: Components
+  url: components/linden-lab-components.yml
+- type: DataModel
+  url: data-model/linden-lab-data-model.yml
+- type: Examples
+  url: examples/linden-lab-examples.yml
+- type: Webhooks
+  url: asyncapi/linden-lab-ans-webhooks.yml
+- type: LLMsTxt
+  url: llms/linden-lab-llms.txt
+- type: Security
+  url: security/linden-lab-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/linden-lab-vulnerability-disclosure.yml
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 25
+  pass: local-v1

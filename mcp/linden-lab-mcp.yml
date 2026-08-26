@@ -1,0 +1,103 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from the endpoints documented on wiki.secondlife.com and probed live on
+  2026-08-25 (see examples/linden-lab-examples.yml). No MCP server exists.
+status: candidate
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+search_evidence:
+  checked: '2026-08-25'
+  results: >-
+    No hosted or packaged MCP server is published by Linden Lab. A GitHub
+    repository search for "secondlife mcp server" returned exactly one result, a
+    third-party viewer fork (DDynamic-Evolution/MikoStorm) that embeds an MCP
+    server for its own automation — not a Linden Lab product. An npm search for a
+    Second Life MCP package returned nothing first-party. There is no mcp.* host
+    on any Linden Lab domain and no /mcp path on api.secondlife.com (probed: 301
+    to the wiki portal).
+note: >-
+  The tools below are a CANDIDATE surface, not something Linden Lab ships. They are
+  derived only from endpoints this pipeline actually reached or that Linden Lab
+  documents in prose — there is no OpenAPI to bind them to, so the input schemas
+  are transcribed from the documentation rather than lifted from a spec, and no
+  tool-crosswalk artifact is emitted (a crosswalk requires an OpenAPI operationId
+  to bind to, and none exists). Nothing here should be read as an agent surface
+  Linden Lab offers.
+candidate_tools:
+  - name: get_grid_statistics
+    description: >-
+      Current Second Life grid statistics — total registered accounts, avatars
+      currently logged in, and the L$/US$ exchange rate, with per-field update
+      timestamps.
+    backing_endpoint: GET https://api.secondlife.com/datafeeds/homepage.txt
+    auth: none
+    input_schema:
+      type: object
+      properties: {}
+    verified: probed
+  - name: get_grid_status
+    description: Whether the Second Life grid is ONLINE, plus signup and inworld counts.
+    backing_endpoint: GET https://api.secondlife.com/datafeeds/secondlife.xml
+    auth: none
+    input_schema:
+      type: object
+      properties: {}
+    verified: probed
+  - name: get_lindex_market_data
+    description: >-
+      LindeX currency market data — limit and market buy/sell rate ranges and
+      volumes over the last hour, last day and today, plus the best-10-percent
+      offer book.
+    backing_endpoint: GET https://api.secondlife.com/datafeeds/lindex.xml
+    auth: none
+    input_schema:
+      type: object
+      properties: {}
+    verified: probed
+  - name: get_agent_id
+    description: Resolve a Second Life username (and optional last name) to its agent UUID.
+    backing_endpoint: POST https://api.secondlife.com/get_agent_id
+    auth: api-key
+    auth_note: >-
+      Requires an `api-key` header issued at
+      https://accounts.secondlife.com/manage_api_key, which requires a Second Life
+      account. Rate limited to 2 requests per second.
+    input_schema:
+      type: object
+      required: [username]
+      properties:
+        username:
+          type: string
+          description: The user's first name or username.
+        lastname:
+          type: string
+          description: The user's last name. Defaults to "Resident" when omitted.
+    verified: derived
+    schema_source: https://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+  - name: get_grid_service_status
+    description: >-
+      Per-component operational status for Second Life (website, grid, marketplace,
+      login) from the Atlassian Statuspage the company publishes.
+    backing_endpoint: GET https://status.secondlifegrid.net/api/v2/summary.json
+    auth: none
+    input_schema:
+      type: object
+      properties: {}
+    verified: probed
+    note: Atlassian's contract served for Linden Lab's page.
+excluded_from_candidates:
+  - endpoint: Registration API (cap.secondlife.com capabilities)
+    reason: >-
+      Creates real Second Life accounts on the production grid, is gated behind an
+      application form reviewed by Linden Lab, and has no reversal operation. Not a
+      surface that should be modelled as an agent tool.
+  - endpoint: Inventory API
+    reason: >-
+      Capability URLs are issued to the viewer at login and are not obtainable by a
+      third party; there is no stable endpoint to bind a tool to.

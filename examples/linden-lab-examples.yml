@@ -1,0 +1,122 @@
+generated: '2026-08-25'
+method: probed
+source: >-
+  Live unauthenticated HTTPS requests issued 2026-08-25 against Linden Lab's own
+  hosts. Every response body referenced below was saved verbatim alongside this
+  file; nothing here is hand-written or reconstructed.
+note: >-
+  Linden Lab publishes no OpenAPI and therefore ships no in-spec examples. These
+  are captured real responses, which is the only honest substitute: an agent
+  reading this file can see the exact shape of every anonymously reachable Second
+  Life endpoint, including the two-line key/value text format that no generic
+  parser handles correctly.
+examples:
+  - name: Grid statistics (text)
+    request:
+      method: GET
+      url: https://api.secondlife.com/datafeeds/homepage.txt
+      auth: none
+    response:
+      status: 200
+      content_type: text/plain
+      file: linden-lab-datafeeds-homepage.txt
+      shape: >-
+        Newline-delimited alternating lines — a field name on one line, its value on
+        the next. Fields: signups_updated_slt, signups_updated_unix, signups,
+        exchange_rate_updated_slt, exchange_rate_updated_unix, exchange_rate,
+        inworld_updated_unix, inworld_updated_slt, inworld.
+  - name: Grid statistics (LLSD XML)
+    request:
+      method: GET
+      url: https://api.secondlife.com/datafeeds/homepage.xml
+      auth: none
+    response:
+      status: 200
+      content_type: application/llsd+xml
+      file: linden-lab-datafeeds-homepage.llsd.xml
+      shape: LLSD map under key `stats`; parse with the first-party `llsd` PyPI package.
+  - name: Grid status (plain XML)
+    request:
+      method: GET
+      url: https://api.secondlife.com/datafeeds/secondlife.xml
+      auth: none
+    response:
+      status: 200
+      content_type: text/xml
+      file: linden-lab-datafeeds-secondlife.xml
+      shape: >-
+        A bare <stats> element with <status>, <signups> and <inworld> children. Note
+        that <signups> here is comma-formatted ("71,723,776") while the same value in
+        homepage.txt and homepage.xml is a bare integer — the three feeds do not
+        agree on number formatting.
+  - name: LindeX market data (text)
+    request:
+      method: GET
+      url: https://api.secondlife.com/datafeeds/lindex.txt
+      auth: none
+    response:
+      status: 200
+      content_type: text/plain
+      file: linden-lab-datafeeds-lindex.txt
+      shape: >-
+        Same two-line key/value format. Keys are terse composites — ll_/mb_/ms_/lb_
+        book side, then 1h/1d/t timeframe, then min_rate/max_rate/l$/us$.
+  - name: LindeX market data (LLSD XML)
+    request:
+      method: GET
+      url: https://api.secondlife.com/datafeeds/lindex.xml
+      auth: none
+    response:
+      status: 200
+      content_type: application/llsd+xml
+      file: linden-lab-datafeeds-lindex.llsd.xml
+      shape: >-
+        LLSD map with nested maps keyed limit_buy_to_limit_sell / market_buy /
+        market_sell / best_10_percent_offer, each with 1_hour / 1_day / today
+        sub-maps. Strictly more legible than the .txt equivalent.
+  - name: Name to Agent ID — missing credential
+    request:
+      method: POST
+      url: https://api.secondlife.com/get_agent_id
+      headers:
+        content-type: application/json
+      body: '{"username":"foo","lastname":"bar"}'
+      auth: none (deliberately omitted)
+    response:
+      status: 400
+      content_type: application/json
+      body: '{"error": "bad_input", "message": "No API key included in header"}'
+      note: >-
+        The documented 400 path. A successful call requires an `api-key` header
+        obtained from https://accounts.secondlife.com/manage_api_key, which requires
+        a Second Life account, so no authenticated example is recorded here.
+  - name: Name to Agent ID — wrong method
+    request:
+      method: GET
+      url: https://api.secondlife.com/get_agent_id
+    response:
+      status: 405
+      note: 'Matches the documented "405: Request method was not POST".'
+  - name: Grid status page (Atlassian Statuspage v2)
+    request:
+      method: GET
+      url: https://status.secondlifegrid.net/api/v2/status.json
+      auth: none
+    response:
+      status: 200
+      content_type: application/json
+      file: linden-lab-status.json
+      note: >-
+        Atlassian's contract served for Linden Lab's page — the only machine-readable
+        operational signal on the whole surface.
+  - name: Bare capability URL
+    request:
+      method: GET
+      url: https://cap.secondlife.com/
+    response:
+      status: 200
+      content_type: text/plain
+      body: 'Invalid Capability ID.'
+      note: >-
+        Returns 200 with an error string rather than a 4xx — worth knowing before
+        writing status-code-based error handling against cap.secondlife.com.

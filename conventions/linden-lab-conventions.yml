@@ -1,0 +1,149 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://wiki.secondlife.com/wiki/APIs_and_Web_Services_Portal and the individual
+  Linden Lab Official API pages beneath it, corroborated by live probes of
+  api.secondlife.com and cap.secondlife.com on 2026-08-25.
+note: >-
+  There are no cross-cutting conventions at Linden Lab, and that is the finding.
+  The Second Life API surface is four unrelated services accreted over roughly two
+  decades — a 2007-era capability system, a set of flat-text and LLSD statistics
+  feeds, a modern JSON key-authenticated lookup endpoint, and a merchant callback —
+  and they share no auth model, no serialization format, no error envelope, no
+  pagination scheme and no versioning scheme. An agent cannot learn one and apply
+  it to the next.
+auth_style:
+  summary: three unrelated models; see authentication/linden-lab-authentication.yml
+  models: [api-key header, unguessable capability URL, anonymous]
+  bearer_tokens: false
+  oauth2: false
+serialization:
+  request:
+    - api: Second Life Name to Agent ID API
+      format: application/json
+    - api: Second Life Registration API
+      format: application/llsd+xml
+    - api: Second Life Inventory API
+      format: LLSD
+  response:
+    - api: Second Life Name to Agent ID API
+      format: application/json
+    - api: Second Life Live Data Feeds
+      formats:
+        - text/plain (newline-delimited key/value pairs — key on one line, value on the next)
+        - text/xml (a bare <stats> document)
+        - application/llsd+xml (LLSD map)
+  note: >-
+    LLSD (Linden Lab Structured Data) is the house serialization format and is
+    genuinely specified and openly implemented — see the first-party `llsd` PyPI
+    package and https://wiki.secondlife.com/wiki/LLSD. The .txt feeds are the
+    outlier: they are not JSON, not CSV, and not key=value — they alternate a key
+    line and a value line, which any generic parser will get wrong.
+idempotency:
+  supported: false
+  header: null
+  detail: >-
+    No idempotency key, no request-deduplication contract, and no retry-safety
+    guidance anywhere on the Second Life API surface. The one non-trivial write
+    operation — Registration API create_user — is documented as failing with code
+    71 "user exists" on a repeat, which is a uniqueness constraint rather than an
+    idempotency guarantee: a retry after a timeout cannot be distinguished from a
+    duplicate attempt by the caller.
+  applicable: true
+pagination:
+  supported: false
+  detail: >-
+    No paginated collection endpoint exists. The Inventory API's
+    FetchInventoryDescendents2 returns a full descendents list per folder with a
+    `descendents` count and a `version` integer, but exposes no cursor, no limit
+    and no offset. The data feeds return fixed-size documents.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+request_id:
+  supported: true
+  header: x-ll-request-id
+  direction: response
+  detail: >-
+    Every api.secondlife.com response carries an x-ll-request-id (observed on both
+    a 400 and a 200 on 2026-08-25). It is not documented anywhere, and no docs page
+    tells a caller to quote it in a support ticket — but it is the only tracing
+    handle the surface gives you.
+  method: probed
+versioning:
+  in_url: false
+  in_header: false
+  detail: see lifecycle/linden-lab-lifecycle.yml
+error_envelope:
+  consistent: false
+  detail: see errors/linden-lab-error-codes.yml — the two documented APIs use different shapes
+rate_limit_signaling:
+  headers: []
+  detail: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After header on any response. The one
+    published limit (2 req/s on get_agent_id) is discoverable only by reading the
+    wiki. See rate-limits/linden-lab-rate-limits.yml.
+dry_run_mode:
+  supported: false
+  detail: >-
+    No dry-run, preview or validate-only mode on any endpoint. The nearest thing is
+    the Registration API's `check_name` capability, which tests username
+    availability without creating an account — a purpose-built pre-flight for one
+    field, not a general dry-run.
+  partial: check_name capability (Registration API)
+reversibility:
+  grade: none
+  applicable: true
+  detail: >-
+    Linden Lab documents no reversal operation, and no reversal window, for any
+    write on its API surface. This is recorded as a real absence, not as an
+    unmeasured field: the wiki pages for the Registration API, the Inventory API
+    and the Marketplace ANS were each read on 2026-08-25 and none names a cancel,
+    undo, void, refund, reverse, rollback or restore operation, and none states a
+    period inside which an action can be taken back. No window is asserted here
+    because none is published.
+  write_surfaces:
+    - operation: create_user (Registration API capability)
+      creates: a Second Life account
+      reversal_operation: null
+      window: null
+      grade: none
+      note: >-
+        Account creation is not reversible through the API. Account closure is a
+        support-desk action performed by the account holder through
+        accounts.secondlife.com, not an API call available to the integrator that
+        created the account.
+    - operation: add_to_group (Registration API capability)
+      creates: group membership for an avatar
+      reversal_operation: null
+      window: null
+      grade: none
+      note: >-
+        No remove_from_group capability is published. Group membership is removed
+        in-world or via the viewer.
+    - operation: Marketplace purchase (reported via ANS, not initiated by API)
+      reversal_operation: Redelivery
+      window: null
+      grade: documented
+      note: >-
+        ANS transaction records carry a Type of either "Purchase" or "Redelivery",
+        so a redelivery event is an observable corrective action in the notification
+        stream. It is a re-send of purchased inventory, not a refund, and Linden Lab
+        publishes no window inside which it can be requested. Graded `documented`
+        rather than `verified` for exactly that reason — the path exists in the
+        data, the window does not exist in the docs.
+      source: https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System
+  read_only_surfaces:
+    - Second Life Live Data Feeds
+    - Second Life Name to Agent ID API
+    - Second Life Map API
+    - Second Life Inventory API (fetch-only capabilities)
+cross_links:
+  errors: errors/linden-lab-error-codes.yml
+  lifecycle: lifecycle/linden-lab-lifecycle.yml
+  authentication: authentication/linden-lab-authentication.yml
+  rate_limits: rate-limits/linden-lab-rate-limits.yml
+  webhooks: asyncapi/linden-lab-ans-webhooks.yml

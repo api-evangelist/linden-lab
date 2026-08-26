@@ -1,0 +1,125 @@
+generated: '2026-08-25'
+method: probed
+source: >-
+  Direct unauthenticated HTTPS GETs run 2026-08-25 against every Linden Lab host
+  named in apis.yml and in the Second Life API documentation.
+hit_count: 0
+note: >-
+  Linden Lab serves no /.well-known/ discovery surface on any host it controls.
+  Every path below was probed and returned 404 (or, on api.secondlife.com, a 403
+  edge denial that rewrites every unknown path to the wiki API portal). The one
+  200 encountered anywhere in this probe — a security.txt on
+  status.secondlifegrid.net — is ATLASSIAN's, not Linden Lab's: the document is
+  PGP-signed by security@atlassian.com and declares
+  "Canonical: https://www.atlassian.com/.well-known/security.txt". Linden Lab's
+  status page is hosted on Atlassian Statuspage, so that file belongs to the
+  platform vendor and is recorded below in third_party_documents, outside hosts[],
+  so it can never be credited to Linden Lab. No WellKnown and no SecurityTxt
+  pointer is emitted for this provider.
+hosts:
+  - host: https://secondlife.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://lindenlab.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.secondlife.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+      - path: /.well-known/openid-configuration
+        status: 403
+      - path: /.well-known/oauth-authorization-server
+        status: 403
+      - path: /.well-known/api-catalog
+        status: 403
+      - path: /.well-known/ai-plugin.json
+        status: 403
+      - path: /.well-known/agent-card.json
+        status: 403
+      - path: /.well-known/agent.json
+        status: 403
+  - host: https://create.secondlife.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://accounts.secondlife.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://status.secondlifegrid.net
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+third_party_documents:
+  - host: https://status.secondlifegrid.net
+    path: /.well-known/security.txt
+    status: 200
+    owner: Atlassian (Statuspage)
+    evidence: >-
+      Body declares "Canonical: https://www.atlassian.com/.well-known/security.txt"
+      and "Contact: mailto:security@atlassian.com"; PGP-signed by Atlassian.
+    counted_for_linden_lab: false
+soft_404_control:
+  - host: https://api.secondlife.com
+    probe: /.well-known/definitely-not-a-real-path-9f21
+    status: 403
+    note: >-
+      api.secondlife.com answers every unrecognised path with a 403 "Access Denied"
+      body of 424 bytes that names the wiki API portal. Only the documented paths
+      (/datafeeds/*, /get_agent_id) resolve; nothing else on that host should be
+      read as present or absent.

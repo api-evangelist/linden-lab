@@ -1,0 +1,290 @@
+generated: '2026-08-25'
+method: searched
+source: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API_Error_Codes plus a live
+  probe of POST https://api.secondlife.com/get_agent_id on 2026-08-25
+format: vendor-specific JSON
+rfc9457: false
+note: 'Linden Lab publishes no application/problem+json and no OpenAPI, so nothing here is derived from
+  a spec — the Registration API catalog below is transcribed from the wiki page that publishes it, and
+  the get_agent_id envelope was observed on a live response. The two APIs use different, incompatible
+  error shapes: Registration returns a numeric code that the API itself will enumerate for you via its
+  get_error_codes capability, while get_agent_id returns a string `error` slug plus a human `message`.
+  There is no shared error envelope across the Second Life API surface.'
+envelopes:
+- api: Second Life Name to Agent ID API
+  content_type: application/json
+  shape:
+    error: string slug
+    message: human-readable description
+  observed_example: '{"error": "bad_input", "message": "No API key included in header"}'
+  observed_status: 400
+  method: probed
+  source: POST https://api.secondlife.com/get_agent_id (2026-08-25, no api-key header)
+- api: Second Life Registration API
+  content_type: application/llsd+xml
+  shape:
+    code: integer
+    message: string
+  discovery: The live code list is retrievable at runtime from the get_error_codes capability URL returned
+    by https://cap.secondlife.com/get_reg_capabilities
+  method: searched
+  source: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Registration_API_Error_Codes
+http_statuses:
+- api: Second Life Name to Agent ID API
+  status: 400
+  meaning: bad_input — malformed body or missing api-key header
+  method: probed
+- api: Second Life Name to Agent ID API
+  status: 403
+  meaning: rate limiting exceeded (>2 requests/second)
+  method: searched
+- api: Second Life Name to Agent ID API
+  status: 404
+  meaning: user does not exist, or invalid API key
+  method: searched
+- api: Second Life Name to Agent ID API
+  status: 405
+  meaning: request method was not POST
+  method: probed
+- api: Second Life Name to Agent ID API
+  status: 500
+  meaning: server error
+  method: searched
+error_code_count: 59
+error_codes:
+- api: Second Life Registration API
+  code: 10
+  message: missing required field
+  class: request-shape
+- api: Second Life Registration API
+  code: 11
+  message: invalid post
+  class: request-shape
+- api: Second Life Registration API
+  code: 12
+  message: unallowed extra field
+  class: request-shape
+- api: Second Life Registration API
+  code: 50
+  message: invalid last name id
+  class: field-validation
+- api: Second Life Registration API
+  code: 51
+  message: invalid username
+  class: field-validation
+- api: Second Life Registration API
+  code: 52
+  message: invalid user
+  class: field-validation
+- api: Second Life Registration API
+  code: 53
+  message: invalid start_local_x
+  class: field-validation
+- api: Second Life Registration API
+  code: 54
+  message: invalid start_local_y
+  class: field-validation
+- api: Second Life Registration API
+  code: 55
+  message: invalid start_local_z
+  class: field-validation
+- api: Second Life Registration API
+  code: 56
+  message: invalid start_look_at_x
+  class: field-validation
+- api: Second Life Registration API
+  code: 57
+  message: invalid start_look_at_y
+  class: field-validation
+- api: Second Life Registration API
+  code: 58
+  message: invalid start_look_at_z
+  class: field-validation
+- api: Second Life Registration API
+  code: 59
+  message: invalid agent_id
+  class: field-validation
+- api: Second Life Registration API
+  code: 60
+  message: invalid group id
+  class: field-validation
+- api: Second Life Registration API
+  code: 61
+  message: invalid experience_id
+  class: field-validation
+- api: Second Life Registration API
+  code: 62
+  message: invalid avatar_id
+  class: field-validation
+- api: Second Life Registration API
+  code: 63
+  message: invalid start_region_name
+  class: field-validation
+- api: Second Life Registration API
+  code: 64
+  message: invalid limited_to_estate
+  class: field-validation
+- api: Second Life Registration API
+  code: 65
+  message: invalid url length
+  class: field-validation
+- api: Second Life Registration API
+  code: 66
+  message: invalid maximum maturity
+  class: field-validation
+- api: Second Life Registration API
+  code: 67
+  message: invalid email address
+  class: field-validation
+- api: Second Life Registration API
+  code: 70
+  message: banned username
+  class: field-validation
+- api: Second Life Registration API
+  code: 71
+  message: user exists
+  class: field-validation
+- api: Second Life Registration API
+  code: 72
+  message: missing orientation island or start location
+  class: field-validation
+- api: Second Life Registration API
+  code: 100
+  message: no perm user
+  class: permission
+- api: Second Life Registration API
+  code: 101
+  message: no perm last name id
+  class: permission
+- api: Second Life Registration API
+  code: 102
+  message: no perm experience
+  class: permission
+- api: Second Life Registration API
+  code: 103
+  message: no perm upgrade
+  class: permission
+- api: Second Life Registration API
+  code: 104
+  message: no perm start_region_name
+  class: permission
+- api: Second Life Registration API
+  code: 105
+  message: no perm limited_to_estate
+  class: permission
+- api: Second Life Registration API
+  code: 106
+  message: invalid group perm
+  class: permission
+- api: Second Life Registration API
+  code: 107
+  message: timeout perm user
+  class: permission
+- api: Second Life Registration API
+  code: 108
+  message: already logged
+  class: permission
+- api: Second Life Registration API
+  code: 109
+  message: already activated
+  class: permission
+- api: Second Life Registration API
+  code: 130
+  message: group set failed
+  class: group-assignment
+- api: Second Life Registration API
+  code: 131
+  message: group set exists
+  class: group-assignment
+- api: Second Life Registration API
+  code: 300
+  message: wrong type username
+  class: type-error
+- api: Second Life Registration API
+  code: 301
+  message: wrong type last_name_id
+  class: type-error
+- api: Second Life Registration API
+  code: 303
+  message: wrong type limited_to_estate
+  class: type-error
+- api: Second Life Registration API
+  code: 304
+  message: wrong type start_region_name
+  class: type-error
+- api: Second Life Registration API
+  code: 305
+  message: wrong type start_local_x
+  class: type-error
+- api: Second Life Registration API
+  code: 306
+  message: wrong type start_local_y
+  class: type-error
+- api: Second Life Registration API
+  code: 307
+  message: wrong type start_local_z
+  class: type-error
+- api: Second Life Registration API
+  code: 308
+  message: wrong type start_look_at_x
+  class: type-error
+- api: Second Life Registration API
+  code: 309
+  message: wrong type start_look_at_y
+  class: type-error
+- api: Second Life Registration API
+  code: 311
+  message: wrong type start_look_at_z
+  class: type-error
+- api: Second Life Registration API
+  code: 312
+  message: wrong type agent_id
+  class: type-error
+- api: Second Life Registration API
+  code: 313
+  message: wrong type avatar_id
+  class: type-error
+- api: Second Life Registration API
+  code: 314
+  message: wrong type experience_id
+  class: type-error
+- api: Second Life Registration API
+  code: 315
+  message: wrong type success_url
+  class: type-error
+- api: Second Life Registration API
+  code: 316
+  message: wrong type error_url
+  class: type-error
+- api: Second Life Registration API
+  code: 317
+  message: wrong type first
+  class: type-error
+- api: Second Life Registration API
+  code: 318
+  message: wrong type last
+  class: type-error
+- api: Second Life Registration API
+  code: 319
+  message: wrong type group_name
+  class: type-error
+- api: Second Life Registration API
+  code: 320
+  message: wrong type marketing_emails
+  class: type-error
+- api: Second Life Registration API
+  code: 321
+  message: wrong type maximum_maturity
+  class: type-error
+- api: Second Life Registration API
+  code: 500
+  message: over registration limit
+  class: quota
+- api: Second Life Registration API
+  code: 600
+  message: invalid credentials
+  class: authentication
+- api: Second Life Registration API
+  code: 1500
+  message: unhandled exception
+  class: server

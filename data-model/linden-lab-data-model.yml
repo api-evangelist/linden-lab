@@ -1,0 +1,126 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from artifacts already in this repo — the field lists in
+  asyncapi/linden-lab-ans-webhooks.yml, the probed response bodies in
+  examples/linden-lab-examples.yml, and the documented request/response shapes in
+  authentication/linden-lab-authentication.yml. NOT derived from an OpenAPI: Linden
+  Lab publishes none, so there are no $refs to walk and no schema component graph.
+  Every entity and field below is one that appears in a document Linden Lab
+  publishes or a response this pipeline actually fetched.
+identifier_scheme:
+  primary: UUID (128-bit, canonical hyphenated form)
+  detail: >-
+    Second Life identifies essentially everything — avatars, groups, inventory items,
+    folders, experiences, regions, transactions — with an untyped UUID. There are no
+    type prefixes (no `acct_`/`cus_` convention), so an identifier carries no
+    information about what it refers to. An agent holding a bare UUID cannot tell
+    whether it is an agent_id, an item_id or a folder_id without the context that
+    produced it.
+  examples_of_key_names: [agent_id, avatar_id, item_id, folder_id, group id, experience_id, PayerKey, ReceiverKey, MerchantKey, TransactionID, ItemID]
+entities:
+  - name: Agent
+    aka: [Resident, avatar]
+    identified_by: agent_id (UUID)
+    fields:
+      - username
+      - lastname (defaults to "Resident" when omitted)
+      - agent_id
+    surfaced_by:
+      - Second Life Name to Agent ID API (POST /get_agent_id)
+      - Second Life Registration API (create_user)
+    relationships:
+      - has_many: InventoryItem
+        via: agent_id
+      - belongs_to_many: Group
+        via: add_to_group capability
+  - name: Group
+    identified_by: group id (UUID)
+    surfaced_by: Second Life Registration API (add_to_group)
+    relationships:
+      - has_many: Agent
+        via: group id
+  - name: InventoryFolder
+    aka: category
+    identified_by: folder_id (UUID)
+    fields: [agent_id, owner_id, folder_id, version, descendents]
+    surfaced_by: Second Life Inventory API (FetchInventoryDescendents2)
+    relationships:
+      - has_many: InventoryItem
+        via: folder_id
+      - has_many: InventoryFolder
+        via: folder_id
+        note: categories nest
+  - name: InventoryItem
+    identified_by: item_id (UUID)
+    surfaced_by: Second Life Inventory API (FetchInventory2)
+    relationships:
+      - belongs_to: InventoryFolder
+        via: folder_id
+      - belongs_to: Agent
+        via: agent_id
+  - name: Region
+    aka: sim
+    identified_by: region name (string) and grid_x / grid_y integer coordinates
+    surfaced_by: Second Life Map API lookup capabilities
+    relationships:
+      - has_many: Parcel
+  - name: Parcel
+    identified_by: parcel area within a region
+    fields: [area_m2, prim_capacity]
+    surfaced_by: land pricing (see plans/linden-lab-plans-pricing.yml); no public read API
+  - name: MarketplaceTransaction
+    identified_by: TransactionID
+    fields:
+      - Currency
+      - Type
+      - PaymentGross
+      - PaymentFee
+      - Location
+    surfaced_by: Marketplace Automatic Notification System (outbound webhook)
+    relationships:
+      - belongs_to: Agent
+        via: PayerKey
+        role: buyer
+      - belongs_to: Agent
+        via: ReceiverKey
+        role: receiver
+      - belongs_to: Agent
+        via: MerchantKey
+        role: merchant
+      - references: MarketplaceItem
+        via: ItemID
+      - references: InventoryItem
+        via: InventoryName
+  - name: MarketplaceItem
+    identified_by: ItemID
+    fields: [ItemName]
+    surfaced_by: Marketplace Automatic Notification System
+  - name: GridStatistics
+    identified_by: singleton
+    fields:
+      - status (ONLINE/OFFLINE)
+      - signups
+      - inworld
+      - exchange_rate
+      - signups_updated_unix / signups_updated_slt
+      - inworld_updated_unix / inworld_updated_slt
+      - exchange_rate_updated_unix / exchange_rate_updated_slt
+    surfaced_by: Second Life Live Data Feeds (/datafeeds/homepage.txt, homepage.xml, secondlife.xml)
+    method: probed
+  - name: LindexMarketSnapshot
+    identified_by: singleton, timestamped by last_updated_unix
+    description: >-
+      L$ currency exchange market data, bucketed by book side and timeframe. Field
+      names in the .txt feed are terse two-letter prefixes — ll (limit buy to limit
+      sell), mb (market buy), ms (market sell), lb (limit buy) — crossed with 1h,
+      1d and t (today), then min_rate / max_rate / l$ volume / us$ volume.
+    fields:
+      - last_updated_unix / last_updated_slt
+      - limit_buy_to_limit_sell.{1_hour,1_day,today}.{min_rate,max_rate,l$_volume,us$_volume}
+      - market_buy.{1_hour,1_day,today}.{min_rate,max_rate,l$_volume,us$_volume}
+      - market_sell.{1_hour,1_day,today}.{min_rate,max_rate,l$_volume,us$_volume}
+      - best_10_percent_offer.{l$_offer,min_rate,max_rate}
+    surfaced_by: Second Life Live Data Feeds (/datafeeds/lindex.txt, lindex.xml)
+    method: probed
+subway_render: null

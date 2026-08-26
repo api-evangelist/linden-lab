@@ -1,0 +1,63 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API,
+  https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Reference,
+  https://wiki.secondlife.com/wiki/Viewer_Web_Widgets
+note: >-
+  Linden Lab's embeddable surface predates the modern component era by well over a
+  decade and shows it: the Map API is a Leaflet-based JavaScript map you drop into a
+  page, documented against Leaflet 1.0.2, with no npm package, no versioned CDN
+  build and no published loader URL on the reference page. It is recorded here
+  because it is genuinely a client-side embeddable component and it still works —
+  https://map.secondlife.com/ returned 200 on 2026-08-25 — not because it is
+  current practice.
+families:
+  - name: Map API
+    kind: embeddable JavaScript map
+    docs: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API
+    reference: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Reference
+    hosted_surface: https://map.secondlife.com/
+    hosted_surface_status: 200
+    underlying_library: Leaflet (documentation references Leaflet 1.0.2)
+    loader_url: null
+    loader_note: >-
+      The reference page does not publish a script-tag URL or CDN path for the
+      library. Recorded as null rather than guessed — a consumer has to work it out
+      from the example pages.
+    api:
+      globals:
+        - signature: SLMap(HTMLElement element)
+          description: Creates a new map inside the specified DOM element.
+        - signature: gotoSLURL(x Number, y Number, Map lmap)
+          description: Pans the map to display the specified inworld location.
+      methods:
+        - signature: setView(LatLng center, Number zoom)
+          description: Centers and zooms the map to the specified location.
+    supporting_endpoints:
+      - purpose: region name lookup by grid coordinate
+        url: https://cap.secondlife.com/cap/0/b713fe80-283b-4585-af4d-a3b7d9a32492?var=_varName_&grid_x=_xcoord_&grid_y=_ycoord_
+        style: JSONP (returns an assignment to the named var)
+      - purpose: global coordinate lookup by region name
+        url: https://cap.secondlife.com/cap/0/d661249b-2b5a-4436-966a-3d3b8d7a574f?var=_varName_&sim_name=_RegionName_
+        style: JSONP
+    examples:
+      - https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Basic_Examples
+      - https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_Advanced_Examples
+    terms: https://wiki.secondlife.com/wiki/Linden_Lab_Official:API_Terms_of_Use
+  - name: Viewer Web Widgets
+    kind: web widgets embedded inside the Second Life viewer
+    docs: https://wiki.secondlife.com/wiki/Viewer_Web_Widgets
+    description: >-
+      Widgets used in the viewer login screen and elsewhere. Consumer is the Second
+      Life viewer itself rather than a third-party web page; listed for completeness.
+    third_party_embeddable: false
+  - name: SLurl
+    kind: deep link
+    docs: https://wiki.secondlife.com/wiki/Linden_Lab_Official:Map_API_SLurl_Technical_Details
+    description: >-
+      A URL scheme (slurl.com / secondlife:// ) that opens a specific inworld
+      location in the viewer. The one piece of Second Life that embeds cleanly into
+      anything, including plain text.
+loader_libraries: []
+npm_published: false

@@ -1,0 +1,84 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System
+  and https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System/Where_to_Set_the_ANS_URL
+asyncapi_spec_published: false
+asyncapi_note: >-
+  Linden Lab publishes no AsyncAPI document, and none was fabricated. A GitHub code
+  search across the secondlife org for "asyncapi" returned 0 results on 2026-08-25.
+  What the company does publish is one real, documented, outbound webhook — the
+  Second Life Marketplace Automatic Notification System — captured below as a
+  webhook catalog rather than as an event spec.
+webhooks:
+  - name: Automatic Notification System (ANS)
+    product: Second Life Marketplace
+    direction: outbound (Linden Lab -> merchant endpoint)
+    description: >-
+      "Forwards information about every sale made on the SL Marketplace to an
+      outside website", where "a program or web page on the receiving site is
+      responsible for accepting the information". The merchant configures a single
+      ANS URL in Marketplace Merchant Home.
+    endpoint_owner: merchant
+    configuration: >-
+      Set in Marketplace Merchant Home. The exact page is behind the Second Life
+      login (marketplace.secondlife.com redirects an anonymous browser to
+      id.secondlife.com), so no configuration URL is asserted here; the wiki page
+      "Where to Set the ANS URL" is the public instruction.
+    configuration_docs: https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System/Where_to_Set_the_ANS_URL
+    http_method: not documented
+    http_method_note: >-
+      The wiki does not state the HTTP method or the content type of the delivery.
+      Recorded as unknown rather than assumed — a merchant has to observe it to
+      find out.
+    transport: HTTP
+    retry_policy: not documented
+    ordering_guarantee: not documented
+    events:
+      - type: Purchase
+        description: a Marketplace sale completed
+      - type: Redelivery
+        description: previously purchased inventory re-sent to the buyer
+    verification:
+      header: X-ANS-Verify-Hash
+      algorithm: SHA1
+      detail: >-
+        The receiving endpoint is sent an X-ANS-Verify-Hash HTTP header containing
+        a SHA1 hash, validated against a merchant-specific salt code obtained from
+        Merchant Home. This is the only integrity control on the callback; there is
+        no shared-secret HMAC signature scheme, no timestamp, and no replay window.
+      note: >-
+        SHA1 without an HMAC construction and without a timestamp is weak by 2026
+        standards. Recorded as published, not endorsed.
+    fields:
+      - Currency
+      - Type
+      - PaymentGross
+      - PaymentFee
+      - PayerName
+      - PayerKey
+      - ReceiverName
+      - ReceiverKey
+      - MerchantName
+      - MerchantKey
+      - TransactionID
+      - ItemID
+      - ItemName
+      - InventoryName
+      - Location
+      - name: VerifyKey
+        note: ANS/SLM only; always empty
+      - name: Region
+        note: ANS/SLM only; always the literal string "SLM"
+event_streams:
+  - name: Second Life Live Data Feeds
+    type: poll
+    detail: >-
+      Not an event stream, but the only other near-real-time surface: pull-only
+      HTTP polling of /datafeeds/*, refreshed publisher-side every 3 minutes
+      (inworld count) and every 15 minutes (LindeX). No push, no websocket, no SSE.
+  - name: Second Life status incident feed
+    type: rss
+    url: https://status.secondlifegrid.net/history.rss
+    status: 200
+    detail: Atlassian Statuspage incident history RSS for Linden Lab's status page.
