@@ -14,6 +14,17 @@ description: >-
   It no longer owns Tilia, its former payments subsidiary, which was sold to Thunes
   in 2024.
 url: https://raw.githubusercontent.com/api-evangelist/linden-lab/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.prod.website-files.com/6285718b944b3be2fa795ac1/62d0ba8168ea16a1021fd9e9_ll-webclip.png
 x-type: company
 x-source: harvest:secondary-market
