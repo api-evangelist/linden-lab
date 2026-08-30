@@ -144,6 +144,11 @@ apis:
   humanURL: https://wiki.secondlife.com/wiki/Direct_Delivery_and_Automatic_Notification_System
   baseURL: https://marketplace.secondlife.com
   tags:
+  - Webhook
+  - Marketplace
+  - Commerce
+  - Notification
+  tags_raw:
   - Webhooks
   - Marketplace
   - Commerce
